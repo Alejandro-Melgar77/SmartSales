@@ -1,0 +1,20 @@
+# --- Framework Principal ---
+django
+djangorestframework
+
+# --- Base de Datos ---
+psycopg2-binary
+
+# --- API y Documentación ---
+drf-spectacular
+django-cors-headers
+
+# --- Machine Learning (IA) ---
+scikit-learn
+joblib
+pandas
+numpy
+
+# --- Reportes (PDF y Excel) ---
+openpyxl
+reportlab
