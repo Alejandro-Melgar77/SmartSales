@@ -1,7 +1,6 @@
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart } from "lucide-react";
 import { CartSheet } from "@/components/CartSheet";
 import { useCart } from "@/contexts/CartContext";
 import {
@@ -15,10 +14,21 @@ import {
 } from "@/components/ui/pagination";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 const BottomNavigation = () => {
   const [isDark, setIsDark] = useState(false);
   const { items } = useCart();
+  const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -26,20 +36,77 @@ const BottomNavigation = () => {
     toast.success(isDark ? "Modo claro activado" : "Modo oscuro activado");
   };
 
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  const handleRegister = () => {
+    navigate("/register");
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Sesión cerrada correctamente");
+  };
+
+  const handleNotasVenta = () => {
+    toast.info("Funcionalidad de notas de venta en desarrollo");
+    // navigate("/notas-venta"); // Para el futuro
+  };
+
+  const handleProfile = () => {
+    toast.info("Perfil del usuario");
+    // navigate("/profile"); // Para el futuro
+  };
+
   return (
     <div className="sticky bottom-0 w-full border-t border-border bg-card/80 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between px-4 py-4">
-        {/* Left: Cart Button */}
-        <CartSheet>
-          <Button variant="default" size="icon" className="relative h-12 w-12">
-            <ShoppingCart className="h-5 w-5" />
-            {items.length > 0 && (
-              <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                {items.length}
-              </Badge>
-            )}
-          </Button>
-        </CartSheet>
+        {/* Left: User Menu or Cart */}
+        <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="h-12 w-12 relative">
+                  <User className="h-5 w-5" />
+                  {user && (
+                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background"></div>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <div className="px-2 py-1.5 text-sm font-semibold">
+                  ¡Hola, {user?.first_name}!
+                </div>
+                <div className="px-2 py-1 text-xs text-muted-foreground">
+                  {user?.role_display}
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleProfile}>
+                  👤 Mi Perfil
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleNotasVenta}>
+                  📄 Mis Compras
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                  🚪 Cerrar Sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <CartSheet>
+              <Button variant="default" size="icon" className="relative h-12 w-12">
+                <ShoppingCart className="h-5 w-5" />
+                {items.length > 0 && (
+                  <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                    {items.length}
+                  </Badge>
+                )}
+              </Button>
+            </CartSheet>
+          )}
+        </div>
 
         {/* Center: Pagination */}
         <Pagination>
@@ -67,20 +134,59 @@ const BottomNavigation = () => {
           </PaginationContent>
         </Pagination>
 
-        {/* Right: Theme Toggle */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-12 w-12"
-          onClick={toggleTheme}
-        >
-          {isDark ? (
-            <Sun className="h-5 w-5" />
-          ) : (
-            <Moon className="h-5 w-5" />
+        {/* Right: Theme Toggle and Auth Buttons */}
+        <div className="flex items-center gap-2">
+          {!isAuthenticated && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogin}
+                className="h-10"
+              >
+                Iniciar Sesión
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleRegister}
+                className="h-10"
+              >
+                Registrarse
+              </Button>
+            </>
           )}
-        </Button>
+          
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-12 w-12"
+            onClick={toggleTheme}
+          >
+            {isDark ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
       </div>
+
+      {/* Auth Status Bar */}
+      {isAuthenticated && (
+        <div className="bg-primary/10 border-t border-primary/20">
+          <div className="container mx-auto px-4 py-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium">
+                Conectado como: <span className="text-primary">{user?.first_name} {user?.last_name}</span>
+              </span>
+              <span className="text-muted-foreground">
+                {user?.role_display}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
