@@ -1,0 +1,63 @@
+import os
+import django
+import sys
+
+# Configurar Django
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'smartsales_config.settings')
+django.setup()
+
+from scripts.seeders import categories, products, users
+from apps.products.models import Producto, Categoria
+from apps.users.models import User, Rol, Permiso
+
+def main():
+    """Ejecutar todos los seeders"""
+    print("🚀 INICIANDO POBLACIÓN COMPLETA DEL SISTEMA")
+    print("=" * 60)
+    
+    # Ejecutar seeders en orden
+    print("📦 CARGANDO DATOS DE PRODUCTOS...")
+    categorias_creadas = categories.run()
+    print("-" * 40)
+    
+    productos_creados = products.run()
+    print("-" * 40)
+    
+    print("👥 CARGANDO SISTEMA DE USUARIOS Y PERMISOS...")
+    usuarios_creados, usuarios_existentes = users.run()
+    print("-" * 40)
+    
+    # Resumen final completo
+    print("🎉 RESUMEN FINAL COMPLETO DEL SISTEMA:")
+    print("   📊 PRODUCTOS:")
+    print(f"      📂 Categorías: {Categoria.objects.count()}")
+    print(f"      📦 Productos: {Producto.objects.count()}")
+    print(f"      ⭐ Productos destacados: {Producto.objects.filter(destacado=True).count()}")
+    
+    print("   👥 USUARIOS Y SEGURIDAD:")
+    print(f"      🔐 Permisos: {Permiso.objects.count()}")
+    print(f"      🎭 Roles: {Rol.objects.count()}")
+    print(f"      👤 Usuarios totales: {User.objects.count()}")
+    print(f"      👑 Administradores: {User.objects.filter(role='admin').count()}")
+    print(f"      💼 Vendedores: {User.objects.filter(role='seller').count()}")
+    print(f"      👥 Clientes: {User.objects.filter(role='customer').count()}")
+    print(f"      ✅ Nuevos usuarios: {usuarios_creados}")
+    print(f"      📝 Usuarios existentes: {usuarios_existentes}")
+    
+    print("   🔗 DATOS DE PRUEBA:")
+    print(f"      🏪 Categorías disponibles: {', '.join([c.nombre for c in Categoria.objects.all()[:5]])}...")
+    print(f"      👤 Usuario admin: admin / admin123")
+    print(f"      👤 Tu usuario: ale / ale123")
+    print(f"      💼 Vendedor demo: vendedor1 / vendedor123")
+    
+    print("=" * 60)
+    print("🎊 ¡POBLACIÓN DEL SISTEMA COMPLETADA EXITOSAMENTE!")
+    print("📍 URLs importantes:")
+    print("   🌐 Frontend: http://localhost:5173")
+    print("   🔧 Backend API: http://localhost:8000/api/")
+    print("   📊 Admin Django: http://localhost:8000/admin/")
+    print("=" * 60)
+
+if __name__ == '__main__':
+    main()

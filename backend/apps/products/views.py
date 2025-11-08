@@ -1,63 +1,77 @@
-from django.shortcuts import render
-
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Category, Product
+from django.db.models import Q
+from .models import Categoria, Producto
 from .serializers import (
-    CategorySerializer, ProductSerializer, 
-    ProductCreateSerializer, FeaturedProductSerializer
+    CategoriaSerializer, ProductoSerializer,
+    ProductoCreateSerializer, ProductoUpdateSerializer
 )
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['nombre']
+    ordering_fields = ['nombre']
+    ordering = ['nombre']
+    # Sin restricciones de permisos
+    permission_classes = []
 
-class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.filter(active=True)
-    serializer_class = ProductSerializer
+class ProductoViewSet(viewsets.ModelViewSet):
+    queryset = Producto.objects.filter(activo=True)
+    serializer_class = ProductoSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'featured', 'active']
-    search_fields = ['name', 'description']
-    ordering_fields = ['price', 'created_at', 'sales_count']
-    ordering = ['-created_at']
+    filterset_fields = ['categoria', 'destacado']
+    search_fields = ['nombre', 'descripcion']
+    ordering_fields = ['precio_venta', 'fecha_creacion', 'nombre']
+    ordering = ['-fecha_creacion']
+    # Sin restricciones de permisos
+    permission_classes = []
 
     def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update':
-            return ProductCreateSerializer
-        return ProductSerializer
+        if self.action == 'create':
+            return ProductoCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return ProductoUpdateSerializer
+        return ProductoSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        # Filtrar por búsqueda si se proporciona
+        search_query = self.request.query_params.get('search', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(nombre__icontains=search_query) |
+                Q(descripcion__icontains=search_query)
+            )
+        
+        return queryset.select_related('categoria')
+
+    def destroy(self, request, *args, **kwargs):
+        """Soft delete - marcar como inactivo en lugar de eliminar"""
+        instance = self.get_object()
+        instance.activo = False
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'])
-    def featured(self, request):
-        """Productos destacados"""
-        featured_products = Product.objects.filter(featured=True, active=True)
-        serializer = FeaturedProductSerializer(featured_products, many=True)
+    def destacados(self, request):
+        """Productos destacados para la página principal"""
+        productos_destacados = self.get_queryset().filter(destacado=True)
+        serializer = self.get_serializer(productos_destacados, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
-    def search(self, request):
-        """Búsqueda de productos por nombre o descripción"""
-        query = request.query_params.get('q', '')
-        if query:
-            products = Product.objects.filter(
-                name__icontains=query, 
-                active=True
-            ) | Product.objects.filter(
-                description__icontains=query, 
-                active=True
-            )
-            serializer = self.get_serializer(products, many=True)
-            return Response(serializer.data)
-        return Response([])
-
-    @action(detail=True, methods=['post'])
-    def update_stock(self, request, pk=None):
-        """Actualizar stock del producto"""
-        product = self.get_object()
-        stock_change = request.data.get('stock_change', 0)
-        product.stock += stock_change
-        product.save()
-        return Response(ProductSerializer(product).data)
+    def por_categoria(self, request):
+        """Productos agrupados por categoría"""
+        categoria_id = request.query_params.get('categoria_id')
+        if categoria_id:
+            productos = self.get_queryset().filter(categoria_id=categoria_id)
+        else:
+            productos = self.get_queryset()
+        
+        serializer = self.get_serializer(productos, many=True)
+        return Response(serializer.data)

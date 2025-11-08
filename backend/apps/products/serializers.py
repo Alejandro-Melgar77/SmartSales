@@ -1,31 +1,40 @@
 from rest_framework import serializers
-from .models import Category, Product
+from .models import Categoria, Producto
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
-        fields = ['id', 'name', 'description', 'image']
+        model = Categoria
+        fields = ['id', 'nombre', 'caracteristicas']
 
-class ProductSerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source='category.name', read_only=True)
-    in_stock = serializers.BooleanField(read_only=True)
-
-    class Meta:
-        model = Product
-        fields = [
-            'id', 'name', 'description', 'price', 'category', 'category_name',
-            'stock', 'image', 'featured', 'active', 'in_stock',
-            'sales_count', 'total_revenue', 'created_at'
-        ]
-
-class ProductCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ['name', 'description', 'price', 'category', 'stock', 'image', 'featured']
-
-class FeaturedProductSerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source='category.name', read_only=True)
+class ProductoSerializer(serializers.ModelSerializer):
+    categoria_nombre = serializers.CharField(source='categoria.nombre', read_only=True)
     
     class Meta:
-        model = Product
-        fields = ['id', 'name', 'description', 'price', 'category_name', 'image', 'in_stock']
+        model = Producto
+        fields = [
+            'id', 'nombre', 'descripcion', 'precio_venta',
+            'categoria', 'categoria_nombre', 'imagen',
+            'activo', 'destacado', 'fecha_creacion'
+        ]
+        read_only_fields = ['id', 'fecha_creacion', 'fecha_actualizacion']
+
+class ProductoCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = [
+            'nombre', 'descripcion', 'precio_venta',
+            'categoria', 'imagen', 'destacado', 'activo'
+        ]
+    
+    def validate_precio_venta(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("El precio de venta debe ser mayor a 0")
+        return value
+
+class ProductoUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = [
+            'nombre', 'descripcion', 'precio_venta',
+            'categoria', 'imagen', 'destacado', 'activo'
+        ]

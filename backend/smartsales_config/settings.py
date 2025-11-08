@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-jw$zk7_j!cu(vtp%(4+n6!0noq!1u%tl^4ig(12tq30#r)rxbj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*']
 
 
 # Application definition
@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'apps.core',
 ]
 
-# Custom User Model
+# Custom User Model (pero sin usar autenticación)
 AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
@@ -60,8 +60,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    'apps.core.middleware.AdminNoAuthMiddleware',  # Agregar este middleware
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -76,8 +75,9 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                # REMOVIDOS: Context processors de autenticación
+                # 'django.contrib.auth.context_processors.auth',
+                # 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
             ],
         },
@@ -111,22 +111,20 @@ DATABASES = {
 }
 """
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# Password validation - REMOVIDOS porque no usamos autenticación
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 
@@ -160,16 +158,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST Framework configuration
+# REST Framework configuration - SIN AUTENTICACIÓN
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',  # Todas las vistas son libres
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [],  # SIN AUTENTICACIÓN
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -188,7 +183,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-# CORS configuration
+# CORS configuration - PERMITIR TODO
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -196,6 +191,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+# Permitir todos los orígenes en desarrollo
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = [
@@ -232,7 +229,7 @@ SPECTACULAR_SETTINGS = {
 # Email configuration (para desarrollo)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Session configuration
+# Session configuration - SIMPLIFICADA
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 2 semanas en segundos
 SESSION_COOKIE_HTTPONLY = True
@@ -279,3 +276,9 @@ LOGGING = {
 # App directories
 import sys
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+
+# Configuración adicional para deshabilitar autenticación en Admin
+ADMIN_NO_AUTH = True
+
+# Deshabilitar el panel de administración de Django si no se necesita
+# Si quieres mantener el admin pero sin auth, necesitamos un middleware personalizado
