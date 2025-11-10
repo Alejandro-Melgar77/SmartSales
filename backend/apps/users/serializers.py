@@ -101,3 +101,8 @@ class HistorialUsuarioSerializer(serializers.ModelSerializer):
             'detalles', 'ip_address', 'user_agent', 'created_at'
         ]
         read_only_fields = ['id', 'created_at']
+
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()

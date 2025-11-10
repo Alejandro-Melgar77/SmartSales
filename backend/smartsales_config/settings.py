@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jw$zk7_j!cu(vtp%(4+n6!0noq!1u%tl^4ig(12tq30#r)rxbj'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -45,13 +46,13 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'django_filters',
     
-    # Local apps
-    'apps.users',
-    'apps.products',
-    'apps.core',
+    # Local apps - CON NOMBRE COMPLETO
+    'apps.users.apps.UsersConfig',
+    'apps.products.apps.ProductsConfig',
+    'apps.core.apps.CoreConfig',
 ]
 
-# Custom User Model (pero sin usar autenticación)
+# Custom User Model
 AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
@@ -60,7 +61,8 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'apps.core.middleware.AdminNoAuthMiddleware',  # Agregar este middleware
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # ✅ DESCOMENTADO
+    'django.contrib.messages.middleware.MessageMiddleware',     # ✅ DESCOMENTADO
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -75,9 +77,8 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                # REMOVIDOS: Context processors de autenticación
-                # 'django.contrib.auth.context_processors.auth',
-                # 'django.contrib.messages.context_processors.messages',
+                'django.contrib.auth.context_processors.auth',      # ✅ DESCOMENTADO
+                'django.contrib.messages.context_processors.messages',  # ✅ DESCOMENTADO
                 'django.template.context_processors.media',
             ],
         },
@@ -90,6 +91,7 @@ WSGI_APPLICATION = 'smartsales_config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Usar SQLite temporalmente para evitar problemas con PostgreSQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -97,35 +99,23 @@ DATABASES = {
     }
 }
 
-# PostgreSQL Configuration (comentar SQLite y descomentar esto cuando esté listo)
+# Configuración para PostgreSQL (cuando esté listo)
 """
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'smartsales365',
-        'USER': 'tu_usuario',
-        'PASSWORD': 'tu_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': config('DB_NAME', default='smartsales'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='1234'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 """
 
-# Password validation - REMOVIDOS porque no usamos autenticación
-AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
-]
+
+# Password validation - Mantener vacío pero sin comentar
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -145,9 +135,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+# STATICFILES_DIRS = [  # ✅ COMENTADO TEMPORALMENTE
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
 # Media files
 MEDIA_URL = '/media/'
@@ -158,13 +148,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST Framework configuration - SIN AUTENTICACIÓN
+# REST Framework configuration - SIN AUTENTICACIÓN PARA APIS PERO CON ADMIN FUNCIONAL
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Todas las vistas son libres
+        'rest_framework.permissions.AllowAny',  # APIs públicas
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [],  # SIN AUTENTICACIÓN
+    'DEFAULT_AUTHENTICATION_CLASSES': [],  # APIs sin autenticación
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -183,7 +173,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-# CORS configuration - PERMITIR TODO
+# CORS configuration
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -191,32 +181,20 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
-# Permitir todos los orígenes en desarrollo
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
+# CSRF configuration
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000", 
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000"
 ]
 
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
-
-# DRF Spectacular configuration for API documentation
+# DRF Spectacular configuration
 SPECTACULAR_SETTINGS = {
     'TITLE': 'SmartSales365 API',
     'DESCRIPTION': 'Sistema Inteligente de Gestión Comercial - Tienda de Electrodomésticos',
@@ -229,7 +207,7 @@ SPECTACULAR_SETTINGS = {
 # Email configuration (para desarrollo)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Session configuration - SIMPLIFICADA
+# Session configuration
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 2 semanas en segundos
 SESSION_COOKIE_HTTPONLY = True
@@ -276,9 +254,6 @@ LOGGING = {
 # App directories
 import sys
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'smartsales_config'))
 
-# Configuración adicional para deshabilitar autenticación en Admin
-ADMIN_NO_AUTH = True
-
-# Deshabilitar el panel de administración de Django si no se necesita
-# Si quieres mantener el admin pero sin auth, necesitamos un middleware personalizado
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']

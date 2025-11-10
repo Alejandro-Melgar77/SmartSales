@@ -1,0 +1,9 @@
+INFO 2025-11-09 20:19:37,157 autoreload 1444 4756 Watching for file changes with StatReloader
+WARNING 2025-11-09 20:19:52,670 log 1444 13392 Not Found: /
+WARNING 2025-11-09 20:19:52,728 log 1444 13392 Not Found: /favicon.ico
+WARNING 2025-11-09 20:21:04,891 log 1444 4428 Bad Request: /api/products/productos/6/
+WARNING 2025-11-09 20:22:39,103 log 1444 4428 Bad Request: /api/products/productos/
+WARNING 2025-11-09 20:22:54,568 log 1444 4428 Bad Request: /api/products/productos/
+WARNING 2025-11-09 22:13:34,654 log 1444 5264 Bad Request: /api/products/productos/
+WARNING 2025-11-09 22:14:44,794 log 1444 1548 Not Found: /favicon.ico
+WARNING 2025-11-09 22:16:13,740 log 1444 14084 Bad Request: /api/products/productos/

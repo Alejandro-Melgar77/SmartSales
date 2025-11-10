@@ -1,20 +1,59 @@
 # --- Framework Principal ---
-django
-djangorestframework
+#django
+#djangorestframework
 
 # --- Base de Datos ---
-psycopg2-binary
+#psycopg2-binary
 
 # --- API y Documentación ---
-drf-spectacular
-django-cors-headers
+#drf-spectacular
+#django-cors-headers
 
 # --- Machine Learning (IA) ---
-scikit-learn
-joblib
-pandas
-numpy
+#scikit-learn
+#joblib
+#pandas
+#numpy
 
 # --- Reportes (PDF y Excel) ---
-openpyxl
-reportlab
+#openpyxl
+#reportlab
+
+#---------------------------------------------------
+#----VERSION COMPLETA (CAMBIAR SI DE FALLAS)-------
+
+# === DJANGO CORE ===
+Django==5.2.7
+djangorestframework==3.15.2
+django-cors-headers==4.7.0
+django-filter==24.3
+drf-spectacular==0.27.2
+
+# === DATABASE ===
+psycopg2-binary==2.9.10
+# Para desarrollo con SQLite (no necesita instalación adicional)
+
+# === MACHINE LEARNING & DATA SCIENCE ===
+scikit-learn==1.5.2
+pandas==2.2.2
+numpy==1.26.4
+joblib==1.4.2
+
+# === REPORTES (PDF & EXCEL) ===
+reportlab==4.2.2
+openpyxl==3.1.5
+weasyprint==61.0
+
+# === UTILITIES ===
+Pillow==10.4.0  # Para manejo de imágenes
+python-decouple==3.8  # Para variables de entorno
+whitenoise==6.9.0  # Para servir archivos estáticos
+
+# === DEVELOPMENT & TESTING ===
+django-debug-toolbar==4.4.7
+django-extensions==3.2.3
+Faker==28.4.0  # Para datos de prueba
+
+# === SECURITY ===
+bcrypt==4.2.1
+argon2-cffi==23.1.0

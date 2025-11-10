@@ -71,9 +71,9 @@ const Productos = () => {
     const productData = {
       nombre: formData.get("nombre") as string,
       descripcion: formData.get("descripcion") as string,
-      precio_venta: Number(formData.get("precio_venta")),
-      categoria: Number(formData.get("categoria")),
-      imagen: formData.get("imagen") as string || "/placeholder.svg",
+      precio_venta: Number(formData.get("precio_venta")),
+      categoria: formData.get("categoria") as string, // <-- BIEN (lo pasas como string)
+      imagen: formData.get("imagen") as string || "/placeholder.svg",
       destacado: formData.get("destacado") === "true",
       activo: true
     };
