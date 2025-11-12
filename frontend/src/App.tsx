@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
-import { AuthProvider } from "@/contexts/AuthContext"; // Nuevo
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Reportes from "./pages/Reportes";
 import Graficos from "./pages/Graficos";
@@ -12,8 +12,9 @@ import Productos from "./pages/Productos";
 import Usuarios from "./pages/Usuarios";
 import Pago from "./pages/Pago";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/Login"; // Nuevo
-import Register from "./pages/Register"; // Nuevo
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import NotasVenta from "./pages/NotasVenta"; // <-- 1. IMPORTADO
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/productos" element={<Productos />} />
               <Route path="/usuarios" element={<Usuarios />} />
               <Route path="/pago" element={<Pago />} />
+              <Route path="/notas-venta" element={<NotasVenta />} /> {/* <-- 2. AÑADIDO */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -62,50 +62,19 @@ const BottomNavigation = () => {
   return (
     <div className="sticky bottom-0 w-full border-t border-border bg-card/80 backdrop-blur-lg">
       <div className="container mx-auto flex items-center justify-between px-4 py-4">
-        {/* Left: User Menu or Cart */}
+        
+        {/* Left: Cart (Mostrado siempre) */}
         <div className="flex items-center gap-2">
-          {isAuthenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-12 w-12 relative">
-                  <User className="h-5 w-5" />
-                  {user && (
-                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background"></div>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                <div className="px-2 py-1.5 text-sm font-semibold">
-                  ¡Hola, {user?.first_name}!
-                </div>
-                <div className="px-2 py-1 text-xs text-muted-foreground">
-                  {user?.role_display}
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleProfile}>
-                  👤 Mi Perfil
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleNotasVenta}>
-                  📄 Mis Compras
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                  🚪 Cerrar Sesión
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <CartSheet>
-              <Button variant="default" size="icon" className="relative h-12 w-12">
-                <ShoppingCart className="h-5 w-5" />
-                {items.length > 0 && (
-                  <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {items.length}
-                  </Badge>
-                )}
-              </Button>
-            </CartSheet>
-          )}
+          <CartSheet>
+            <Button variant="default" size="icon" className="relative h-12 w-12">
+              <ShoppingCart className="h-5 w-5" />
+              {items.length > 0 && (
+                <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  {items.length}
+                </Badge>
+              )}
+            </Button>
+          </CartSheet>
         </div>
 
         {/* Center: Pagination */}

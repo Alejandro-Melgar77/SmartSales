@@ -9,24 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-
-interface Product {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  precio_venta: number;
-  categoria: number;
-  categoria_nombre?: string;
-  imagen: string;
-  destacado: boolean;
-  activo: boolean;
-}
-
-interface Category {
-  id: string;
-  nombre: string;
-  caracteristicas: string;
-}
+import { Product, Category, getAllProducts, getCategories } from "@/integrations/supabase/products";
 
 const Productos = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -37,30 +20,23 @@ const Productos = () => {
 
   // Cargar productos y categorías
   useEffect(() => {
-    fetchProducts();
-    fetchCategories();
+    loadData();
   }, []);
 
-  const fetchProducts = async () => {
+  const loadData = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/products/productos/');
-      const data = await response.json();
-      setProducts(data.results || data);
+      setLoading(true);
+      const [productsData, categoriesData] = await Promise.all([
+        getAllProducts(),
+        getCategories(),
+      ]);
+      setProducts(productsData);
+      setCategories(categoriesData);
     } catch (error) {
-      toast.error("Error al cargar productos");
-      console.error('Error fetching products:', error);
+      toast.error("Error al cargar datos");
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/products/categorias/');
-      const data = await response.json();
-      setCategories(data.results || data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
     }
   };
 
@@ -71,12 +47,14 @@ const Productos = () => {
     const productData = {
       nombre: formData.get("nombre") as string,
       descripcion: formData.get("descripcion") as string,
-      precio_venta: Number(formData.get("precio_venta")),
-      categoria: formData.get("categoria") as string, // <-- BIEN (lo pasas como string)
-      imagen: formData.get("imagen") as string || "/placeholder.svg",
+      precio_venta: Number(formData.get("precio_venta")),
+      categoria: Number(formData.get("categoria")), // 👈 CORREGIDO: debe ser number, no string
+      imagen: formData.get("imagen") as string || "/placeholder.svg",
       destacado: formData.get("destacado") === "true",
       activo: true
     };
+
+    console.log('📦 Enviando datos:', productData); // 👈 Para debug
 
     try {
       if (editingProduct) {
@@ -91,8 +69,10 @@ const Productos = () => {
 
         if (response.ok) {
           toast.success("Producto actualizado");
-          fetchProducts(); // Recargar la lista
+          loadData(); // Recargar la lista
         } else {
+          const errorData = await response.json();
+          console.error('Error del servidor:', errorData);
           throw new Error('Error al actualizar');
         }
       } else {
@@ -107,8 +87,10 @@ const Productos = () => {
 
         if (response.ok) {
           toast.success("Producto creado");
-          fetchProducts(); // Recargar la lista
+          loadData(); // Recargar la lista
         } else {
+          const errorData = await response.json();
+          console.error('Error del servidor:', errorData);
           throw new Error('Error al crear');
         }
       }
@@ -121,7 +103,7 @@ const Productos = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => { // 👈 CORREGIDO: id debe ser number
     try {
       const response = await fetch(`http://localhost:8000/api/products/productos/${id}/`, {
         method: 'DELETE'
@@ -129,7 +111,7 @@ const Productos = () => {
 
       if (response.ok) {
         toast.success("Producto eliminado");
-        fetchProducts(); // Recargar la lista
+        loadData(); // Recargar la lista
       } else {
         throw new Error('Error al eliminar');
       }
@@ -209,7 +191,7 @@ const Productos = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
+                        <SelectItem key={category.id} value={category.id.toString()}> {/* 👈 CORREGIDO: convertir a string */}
                           {category.nombre}
                         </SelectItem>
                       ))}
@@ -223,6 +205,7 @@ const Productos = () => {
                     id="imagen" 
                     name="imagen" 
                     defaultValue={editingProduct?.imagen} 
+                    placeholder="/media/productos/imagen.jpg"
                   />
                 </div>
                 
@@ -239,9 +222,22 @@ const Productos = () => {
                   </Select>
                 </div>
                 
-                <Button type="submit" className="w-full">
-                  {editingProduct ? "Actualizar" : "Crear"} Producto
-                </Button>
+                <div className="flex gap-2 pt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => {
+                      setDialogOpen(false);
+                      setEditingProduct(null);
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" className="flex-1">
+                    {editingProduct ? "Actualizar" : "Crear"} Producto
+                  </Button>
+                </div>
               </form>
             </DialogContent>
           </Dialog>
@@ -249,52 +245,58 @@ const Productos = () => {
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
-            <Card key={product.id}>
-              <CardContent className="p-4">
-                <img 
-                  src={product.imagen || "/placeholder.svg"} 
-                  alt={product.nombre} 
-                  className="mb-4 h-48 w-full rounded-lg object-cover" 
-                />
-                <h3 className="font-semibold">{product.nombre}</h3>
-                <p className="text-sm text-muted-foreground">{product.descripcion}</p>
-                <p className="text-lg font-bold text-primary">${product.precio_venta}</p>
-                <p className="text-sm text-muted-foreground">
-                  Categoría: {product.categoria_nombre}
-                  {product.destacado && " • ⭐ Destacado"}
-                </p>
-                <div className="mt-4 flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => {
-                      setEditingProduct(product);
-                      setDialogOpen(true);
-                    }}
-                  >
-                    <Edit className="mr-1 h-3 w-3" />
-                    Editar
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm">
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Esta acción eliminará el producto permanentemente.
-                      </AlertDialogDescription>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(product.id)}>
-                          Eliminar
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+            <Card key={product.id} className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src={product.imagen || "/placeholder.svg"} 
+                    alt={product.nombre} 
+                    className="h-full w-full object-cover transition-transform hover:scale-105" 
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-2">{product.nombre}</h3>
+                  <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                    {product.descripcion || "Sin descripción"}
+                  </p>
+                  <p className="text-lg font-bold text-primary mb-2">${product.precio_venta}</p>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Categoría: {product.categoria_nombre}
+                    {product.destacado && " • ⭐ Destacado"}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => {
+                        setEditingProduct(product);
+                        setDialogOpen(true);
+                      }}
+                    >
+                      <Edit className="mr-1 h-3 w-3" />
+                      Editar
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm">
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Esta acción eliminará el producto permanentemente.
+                        </AlertDialogDescription>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(product.id)}>
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </CardContent>
             </Card>

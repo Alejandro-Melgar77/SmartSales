@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     
     # Third party apps
     'rest_framework',
+    'rest_framework.authtoken', # <--- AÑADIDO: Para manejar los tokens de API
     'corsheaders',
     'drf_spectacular',
     'django_filters',
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.products.apps.ProductsConfig',
     'apps.core.apps.CoreConfig',
+    'apps.payments.apps.PaymentsConfig',
+    'apps.sales.apps.SalesConfig',
 ]
 
 # Custom User Model
@@ -62,7 +65,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # ✅ DESCOMENTADO
-    'django.contrib.messages.middleware.MessageMiddleware',     # ✅ DESCOMENTADO
+    'django.contrib.messages.middleware.MessageMiddleware',    # ✅ DESCOMENTADO
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -136,7 +139,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # STATICFILES_DIRS = [  # ✅ COMENTADO TEMPORALMENTE
-#     os.path.join(BASE_DIR, 'static'),
+#   os.path.join(BASE_DIR, 'static'),
 # ]
 
 # Media files
@@ -148,13 +151,27 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST Framework configuration - SIN AUTENTICACIÓN PARA APIS PERO CON ADMIN FUNCIONAL
+
+# --- 👇 INICIO DE LA MODIFICACIÓN ---
+
+# REST Framework configuration
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    
+    # Por defecto, permitimos el acceso (AllowAny),
+    # pero cada ViewSet (como Pagos) puede sobreescribir esto
+    # con 'permissions.IsAuthenticated'
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # APIs públicas
+        'rest_framework.permissions.AllowAny',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [],  # APIs sin autenticación
+    
+    # ESTA ES LA CORRECCIÓN MÁS IMPORTANTE:
+    # Le decimos a Django que sepa leer los "Token <key>"
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication', # Para el Browsable API
+    ],
+    
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -172,6 +189,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
 }
+# --- 👆 FIN DE LA MODIFICACIÓN ---
+
 
 # CORS configuration
 CORS_ALLOWED_ORIGINS = [

@@ -31,7 +31,6 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Simular login con el backend
       const response = await fetch('http://localhost:8000/api/users/users/login/', {
         method: 'POST',
         headers: {
@@ -41,13 +40,29 @@ const Login = () => {
       });
 
       if (response.ok) {
-        const userData = await response.json();
-        login(userData);
-        toast.success(`¡Bienvenido ${userData.first_name}!`);
-        navigate("/");
+        // --- 👇 INICIO DE LA CORRECCIÓN ---
+        
+        // 1. Recibimos la respuesta completa (que debe incluir user y token)
+        const data = await response.json(); 
+
+        // 2. Verificamos que la respuesta tenga el token y el usuario
+        if (data.user && data.token) {
+          
+          // 3. Llamamos a la NUEVA función login con AMBOS argumentos
+          login(data.user, data.token); 
+          
+          toast.success(`¡Bienvenido ${data.user.first_name}!`);
+          navigate("/");
+        } else {
+          // Si la respuesta no tiene 'user' o 'token'
+          console.error("Respuesta de login inesperada:", data);
+          toast.error("Error en el formato de respuesta del servidor.");
+        }
+        // --- 👆 FIN DE LA CORRECCIÓN ---
+
       } else {
         const errorData = await response.json();
-        toast.error(errorData.error || "Error al iniciar sesión");
+        toast.error(errorData.error || errorData.detail || "Error al iniciar sesión");
       }
     } catch (error) {
       console.error('Login error:', error);

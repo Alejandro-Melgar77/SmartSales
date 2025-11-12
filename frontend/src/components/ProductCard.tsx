@@ -1,16 +1,20 @@
+// src/components/ProductCard.tsx
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
+import { cn } from "@/lib/utils";
+import ProductImage from "./ProductImage"; // 👈 Importar el nuevo componente
 
 interface ProductCardProps {
   id: string;
   image: string;
   name: string;
   price: number;
+  className?: string;
 }
 
-const ProductCard = ({ id, image, name, price }: ProductCardProps) => {
+const ProductCard = ({ id, image, name, price, className }: ProductCardProps) => {
   const { addToCart } = useCart();
   
   const handleAddToCart = () => {
@@ -18,10 +22,14 @@ const ProductCard = ({ id, image, name, price }: ProductCardProps) => {
   };
 
   return (
-    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-[var(--shadow-hover)]">
+    <Card className={cn(
+      "group overflow-hidden transition-all duration-300 hover:shadow-lg",
+      className
+    )}>
       <CardContent className="p-4">
+        {/* Usar ProductImage en lugar de img directo */}
         <div className="mb-3 aspect-square overflow-hidden rounded-lg bg-muted">
-          <img
+          <ProductImage
             src={image}
             alt={name}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"

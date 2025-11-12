@@ -2,6 +2,12 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
+
+# --- 👇 AÑADIDO ---
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+# --- 👆 FIN AÑADIDO ---
+
 from .models import User, Rol, Permiso, HistorialUsuario
 from .serializers import (
     UserSerializer, UserCreateSerializer, UserUpdateSerializer,
@@ -10,6 +16,7 @@ from .serializers import (
 )
 
 class PermisoViewSet(viewsets.ModelViewSet):
+    # ... (Tu código de PermisoViewSet - sin cambios)
     queryset = Permiso.objects.all()
     serializer_class = PermisoSerializer
     permission_classes = [permissions.AllowAny]
@@ -27,6 +34,7 @@ class PermisoViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class RolViewSet(viewsets.ModelViewSet):
+    # ... (Tu código de RolViewSet - sin cambios)
     queryset = Rol.objects.all()
     serializer_class = RolSerializer
     permission_classes = [permissions.AllowAny]
@@ -57,6 +65,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     def get_queryset(self):
+        # ... (Tu código de get_queryset - sin cambios)
         queryset = super().get_queryset()
         
         # Filtrar por rol si se especifica
@@ -71,33 +80,54 @@ class UserViewSet(viewsets.ModelViewSet):
         
         return queryset.select_related('rol_personalizado')
 
+    # --- 👇 INICIO DE LA MODIFICACIÓN ---
     @action(detail=False, methods=['post'])
     def login(self, request):
-        """Login sin autenticación real (solo simulación)"""
+        """Login de usuario real con token"""
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             username = serializer.validated_data['username']
-            try:
-                user = User.objects.get(username=username)
-                
-                # Registrar en historial
-                HistorialUsuario.objects.create(
-                    usuario=user,
-                    accion='Inicio de sesión',
-                    modulo='Autenticación',
-                    detalles={'metodo': 'simulado'}
-                )
-                
-                return Response(UserSerializer(user).data)
-            except User.DoesNotExist:
+            # Asumimos que UserLoginSerializer también valida 'password'
+            password = serializer.validated_data.get('password') 
+
+            # Autenticamos al usuario
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                if user.is_active:
+                    # Obtenemos o creamos un token para el usuario
+                    token, created = Token.objects.get_or_create(user=user)
+                    
+                    # Registrar en historial
+                    HistorialUsuario.objects.create(
+                        usuario=user,
+                        accion='Inicio de sesión',
+                        modulo='Autenticación',
+                        detalles={'metodo': 'token_auth'}
+                    )
+                    
+                    # Devolvemos la respuesta que el frontend espera
+                    return Response({
+                        'token': token.key,
+                        'user': UserSerializer(user).data
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return Response(
+                        {"error": "Esta cuenta está inactiva"},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+            else:
+                # Credenciales inválidas (usuario o contraseña incorrectos)
                 return Response(
-                    {"error": "Usuario no encontrado"}, 
-                    status=status.HTTP_404_NOT_FOUND
+                    {"error": "Usuario o contraseña incorrectos"},
+                    status=status.HTTP_401_UNAUTHORIZED
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # --- 👆 FIN DE LA MODIFICACIÓN ---
 
     @action(detail=False, methods=['get'])
     def profile(self, request):
+        # ... (Tu código de profile - sin cambios)
         """Obtener perfil del usuario actual (simulado)"""
         try:
             # Por defecto devolvemos el usuario 'ale'
@@ -111,6 +141,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def customers(self, request):
+        # ... (Tu código de customers - sin cambios)
         """Listar solo clientes"""
         customers = User.objects.filter(role='customer')
         serializer = self.get_serializer(customers, many=True)
@@ -118,6 +149,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def admins(self, request):
+        # ... (Tu código de admins - sin cambios)
         """Listar solo administradores"""
         admins = User.objects.filter(role='admin')
         serializer = self.get_serializer(admins, many=True)
@@ -125,6 +157,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def sellers(self, request):
+        # ... (Tu código de sellers - sin cambios)
         """Listar solo vendedores"""
         sellers = User.objects.filter(role='seller')
         serializer = self.get_serializer(sellers, many=True)
@@ -132,6 +165,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def update_points(self, request, pk=None):
+        # ... (Tu código de update_points - sin cambios)
         """Actualizar puntos de fidelidad"""
         user = self.get_object()
         puntos = request.data.get('puntos', 0)
@@ -160,6 +194,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def historial(self, request, pk=None):
+        # ... (Tu código de historial - sin cambios)
         """Obtener historial del usuario"""
         user = self.get_object()
         historial = HistorialUsuario.objects.filter(usuario=user).order_by('-created_at')
@@ -167,6 +202,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        # ... (Tu código de destroy - sin cambios)
         """Soft delete - desactivar usuario en lugar de eliminar"""
         instance = self.get_object()
         instance.is_active = False
@@ -182,6 +218,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class HistorialUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
+    # ... (Tu código de HistorialUsuarioViewSet - sin cambios)
     queryset = HistorialUsuario.objects.all()
     serializer_class = HistorialUsuarioSerializer
     permission_classes = [permissions.AllowAny]
