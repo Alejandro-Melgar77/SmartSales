@@ -27,9 +27,9 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-fallback-key-for-dev'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
-
+ALLOWED_HOSTS = ['*']  # Permitir todos los hosts durante el desarrollo
 # Application definition
 
 INSTALLED_APPS = [

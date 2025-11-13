@@ -1,7 +1,7 @@
 # backend/Dockerfile
 
 # Usar imagen base de Python ligera
-FROM python:3.10-slim
+FROM python:3.14-slim
 
 # Evitar que Python genere archivos .pyc
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -31,4 +31,6 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Comando para iniciar el servidor en producción
-CMD ["gunicorn", "smartsales_config.wsgi:application", "--bind", "0.0.0.0:8000"]
+#CMD ["gunicorn", "smartsales_config.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
