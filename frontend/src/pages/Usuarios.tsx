@@ -45,7 +45,7 @@ const Usuarios = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/users/users/');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/users/`);
       const data = await response.json();
       setUsers(data.results || data);
     } catch (error) {
@@ -77,7 +77,7 @@ const Usuarios = () => {
     try {
       if (editingUser) {
         // Actualizar usuario existente
-        const response = await fetch(`http://localhost:8000/api/users/users/${editingUser.id}/`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/users/${editingUser.id}/`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const Usuarios = () => {
           password_confirm: "temp123"
         };
 
-        const response = await fetch('http://localhost:8000/api/users/users/', {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/users/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ const Usuarios = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/users/users/${id}/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/users/${id}/`, {
         method: 'DELETE'
       });
 

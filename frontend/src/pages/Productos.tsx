@@ -50,14 +50,14 @@ const Productos = () => {
     setLoading(true);
     try {
       // 👇 Construir URL dinámica
-      let productsUrl = 'http://localhost:8000/api/products/productos/';
+      let productsUrl = `${import.meta.env.VITE_API_BASE_URL}/products/productos/`;
       if (currentSearch) {
         productsUrl += `?search=${encodeURIComponent(currentSearch)}`;
       }
 
       const [prodRes, catRes] = await Promise.all([
         fetch(productsUrl),
-        fetch('http://localhost:8000/api/products/categorias/')
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/products/categorias/`),
       ]);
       
       const prodData = await prodRes.json();
@@ -91,8 +91,8 @@ const Productos = () => {
 
     try {
       const url = editingProduct
-        ? `http://localhost:8000/api/products/productos/${editingProduct.id}/`
-        : 'http://localhost:8000/api/products/productos/';
+        ? `${import.meta.env.VITE_API_BASE_URL}/products/productos/${editingProduct.id}/`
+        : `${import.meta.env.VITE_API_BASE_URL}/products/productos/`;
       
       const method = editingProduct ? 'PUT' : 'POST';
 
@@ -125,7 +125,7 @@ const Productos = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/products/productos/${id}/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/products/productos/${id}/`, {
         method: 'DELETE'
       });
 
