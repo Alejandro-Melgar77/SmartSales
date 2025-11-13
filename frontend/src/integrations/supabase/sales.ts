@@ -108,3 +108,65 @@ export async function downloadSaleFile(ventaId: number, format: 'pdf' | 'excel')
     throw err;
   }
 }
+
+// --- 👇 4. FUNCIÓN GENERATE REPORT CORREGIDA ---
+
+export async function generateReport(
+  filters: Record<string, any>
+): Promise<void> {
+  const url = `${API_URL}/sales/reportes/generar/`;
+  console.log('🔗 Generating report from:', url);
+  console.log('📦 Sending filters:', filters);
+  
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    throw new Error("No estás autenticado.");
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Token ${token}`,
+      },
+      body: JSON.stringify(filters)
+    });
+
+    if (!response.ok) {
+      // Si la respuesta NO es un archivo, será un JSON de error
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
+    }
+
+    // --- Lógica de descarga de archivos MEJORADA ---
+    const blob = await response.blob();
+    
+    // Leemos el 'Content-Type' de la respuesta del backend
+    const contentType = response.headers.get('content-type');
+    
+    let fileExtension = 'bin'; // Extensión por defecto
+    if (contentType === 'application/pdf') {
+      fileExtension = 'pdf';
+    } else if (contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+      fileExtension = 'xlsx';
+    }
+
+    const fileUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = fileUrl;
+    
+    // Usamos la extensión detectada
+    a.download = `reporte_ventas.${fileExtension}`;
+    
+    document.body.appendChild(a);
+    a.click();
+    
+    window.URL.revokeObjectURL(fileUrl);
+    a.remove();
+
+  } catch (err) {
+    console.error(`💥 Error generating report:`, err);
+    throw err; // Relanzamos el error para que la página lo capture
+  }
+}

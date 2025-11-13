@@ -101,3 +101,491 @@ INFO 2025-11-12 00:43:23,234 autoreload 1948 11228 C:\Users\Ale\Documents\Si2 20
 INFO 2025-11-12 00:43:23,815 autoreload 8488 9440 Watching for file changes with StatReloader
 INFO 2025-11-12 00:44:00,357 autoreload 3552 7704 Watching for file changes with StatReloader
 INFO 2025-11-12 01:40:13,292 autoreload 576 1316 Watching for file changes with StatReloader
+WARNING 2025-11-12 01:47:16,793 log 576 9592 Not Found: /api/sales/ventas/1/download-pdf/
+WARNING 2025-11-12 01:47:18,408 log 576 9592 Not Found: /api/sales/ventas/1/download-excel/
+INFO 2025-11-12 08:43:14,180 autoreload 4812 4804 Watching for file changes with StatReloader
+WARNING 2025-11-12 08:45:14,906 log 4812 11280 Not Found: /api/sales/ventas/1/download-pdf/
+INFO 2025-11-12 08:54:04,304 autoreload 4812 4804 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py changed, reloading.
+INFO 2025-11-12 08:54:05,500 autoreload 12928 5196 Watching for file changes with StatReloader
+INFO 2025-11-12 08:54:28,953 autoreload 3652 7056 Watching for file changes with StatReloader
+INFO 2025-11-12 09:15:13,623 autoreload 9912 3232 Watching for file changes with StatReloader
+WARNING 2025-11-12 09:44:58,093 log 9912 3132 Not Found: /favicon.ico
+INFO 2025-11-12 10:03:29,292 autoreload 9912 3232 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py changed, reloading.
+INFO 2025-11-12 10:03:29,870 autoreload 10576 5076 Watching for file changes with StatReloader
+INFO 2025-11-12 17:35:32,181 autoreload 8488 7684 Watching for file changes with StatReloader
+ERROR 2025-11-12 18:09:29,110 log 8488 4848 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 313, in generate_report
+    return self.generate_pdf(report_data, titulo, headers, group_by)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 328, in generate_pdf
+    p.drawString(inch * 4, y, headers[1])
+                              ~~~~~~~^^^
+IndexError: list index out of range
+ERROR 2025-11-12 18:09:33,798 log 8488 4848 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 313, in generate_report
+    return self.generate_pdf(report_data, titulo, headers, group_by)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 328, in generate_pdf
+    p.drawString(inch * 4, y, headers[1])
+                              ~~~~~~~^^^
+IndexError: list index out of range
+ERROR 2025-11-12 18:09:55,507 log 8488 14736 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 313, in generate_report
+    return self.generate_pdf(report_data, titulo, headers, group_by)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 328, in generate_pdf
+    p.drawString(inch * 4, y, headers[1])
+                              ~~~~~~~^^^
+IndexError: list index out of range
+INFO 2025-11-12 18:25:08,507 autoreload 8488 7684 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py changed, reloading.
+INFO 2025-11-12 18:25:09,110 autoreload 11168 9360 Watching for file changes with StatReloader
+INFO 2025-11-12 18:25:17,612 autoreload 1052 7360 Watching for file changes with StatReloader
+ERROR 2025-11-12 18:25:28,329 log 1052 16108 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 310, in generate_report
+    return self.generate_excel(report_data, titulo, headers, group_by)
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ReportGeneratorViewSet' object has no attribute 'generate_excel'. Did you mean: 'generate_report'?
+ERROR 2025-11-12 18:25:49,601 log 1052 7688 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 310, in generate_report
+    return self.generate_excel(report_data, titulo, headers, group_by)
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ReportGeneratorViewSet' object has no attribute 'generate_excel'. Did you mean: 'generate_report'?
+ERROR 2025-11-12 18:27:31,624 log 1052 16108 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 517, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 429, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+ERROR 2025-11-12 18:27:59,162 log 1052 16108 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 517, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 429, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+ERROR 2025-11-12 18:29:29,358 log 1052 7688 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 310, in generate_report
+    return self.generate_excel(report_data, titulo, headers, group_by)
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ReportGeneratorViewSet' object has no attribute 'generate_excel'. Did you mean: 'generate_report'?
+ERROR 2025-11-12 18:35:40,104 log 1052 15876 Internal Server Error: /api/sales/reportes/generar/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 517, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 429, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+INFO 2025-11-12 18:42:16,510 autoreload 15296 9268 Watching for file changes with StatReloader
+INFO 2025-11-12 18:42:21,633 autoreload 15296 9268 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py changed, reloading.
+INFO 2025-11-12 18:42:22,226 autoreload 14592 5492 Watching for file changes with StatReloader
+INFO 2025-11-12 18:42:29,177 autoreload 2184 15208 Watching for file changes with StatReloader
+WARNING 2025-11-12 18:43:38,128 log 2184 6952 Bad Request: /api/sales/reportes/generar/
+WARNING 2025-11-12 18:44:02,522 log 2184 6952 Bad Request: /api/sales/reportes/generar/
+WARNING 2025-11-12 18:44:24,583 log 2184 6952 Bad Request: /api/sales/reportes/generar/
+INFO 2025-11-12 19:13:30,089 autoreload 2184 15208 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\urls.py changed, reloading.
+INFO 2025-11-12 19:13:30,776 autoreload 1116 3908 Watching for file changes with StatReloader
+ERROR 2025-11-12 19:20:21,141 log 1116 14180 Internal Server Error: /api/sales/dashboard/historical-summary/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 391, in historical_summary
+    .annotate(month=TruncMonth('fecha_creacion')) \
+                    ^^^^^^^^^^
+NameError: name 'TruncMonth' is not defined
+ERROR 2025-11-12 19:20:21,372 log 1116 7696 Internal Server Error: /api/sales/dashboard/predictions/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 410, in get_predictions
+    predictions = predict_future_sales(months_to_predict=6)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py", line 121, in predict_future_sales
+    future_df['año'] = future_df['fecha'].dt.year
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\indexes\accessors.py", line 643, in __new__
+    raise AttributeError("Can only use .dt accessor with datetimelike values")
+AttributeError: Can only use .dt accessor with datetimelike values. Did you mean: 'at'?
+ERROR 2025-11-12 19:20:28,043 log 1116 7696 Internal Server Error: /api/sales/dashboard/historical-summary/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 391, in historical_summary
+    .annotate(month=TruncMonth('fecha_creacion')) \
+                    ^^^^^^^^^^
+NameError: name 'TruncMonth' is not defined
+ERROR 2025-11-12 19:20:28,078 log 1116 14180 Internal Server Error: /api/sales/dashboard/predictions/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 410, in get_predictions
+    predictions = predict_future_sales(months_to_predict=6)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py", line 121, in predict_future_sales
+    future_df['año'] = future_df['fecha'].dt.year
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\indexes\accessors.py", line 643, in __new__
+    raise AttributeError("Can only use .dt accessor with datetimelike values")
+AttributeError: Can only use .dt accessor with datetimelike values. Did you mean: 'at'?
+WARNING 2025-11-12 19:21:25,334 log 1116 3560 Unauthorized: /api/sales/dashboard/historical-summary/
+WARNING 2025-11-12 19:21:25,427 log 1116 3560 Not Found: /favicon.ico
+INFO 2025-11-12 19:30:17,652 autoreload 1116 3908 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py changed, reloading.
+INFO 2025-11-12 19:30:18,590 autoreload 8668 13064 Watching for file changes with StatReloader
+INFO 2025-11-12 19:30:33,429 autoreload 10472 7660 Watching for file changes with StatReloader
+ERROR 2025-11-12 19:30:46,069 log 10472 9268 Internal Server Error: /api/sales/dashboard/predictions/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 412, in get_predictions
+    predictions = predict_future_sales(months_to_predict=6)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py", line 122, in predict_future_sales
+    future_df['año'] = future_df['fecha'].dt.year
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\indexes\accessors.py", line 643, in __new__
+    raise AttributeError("Can only use .dt accessor with datetimelike values")
+AttributeError: Can only use .dt accessor with datetimelike values. Did you mean: 'at'?
+INFO 2025-11-12 19:35:14,842 autoreload 10472 7660 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py changed, reloading.
+INFO 2025-11-12 19:35:15,726 autoreload 8424 5856 Watching for file changes with StatReloader
+INFO 2025-11-12 19:35:22,808 autoreload 15484 13800 Watching for file changes with StatReloader
+ERROR 2025-11-12 19:35:33,142 log 15484 1160 Internal Server Error: /api/sales/dashboard/predictions/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 412, in get_predictions
+    predictions = predict_future_sales(months_to_predict=6)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py", line 121, in predict_future_sales
+    future_df['año'] = future_df['fecha'].dt.year
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\indexes\accessors.py", line 643, in __new__
+    raise AttributeError("Can only use .dt accessor with datetimelike values")
+AttributeError: Can only use .dt accessor with datetimelike values. Did you mean: 'at'?
+ERROR 2025-11-12 19:50:37,715 log 15484 11324 Internal Server Error: /api/sales/dashboard/predictions/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 412, in get_predictions
+    predictions = predict_future_sales(months_to_predict=6)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py", line 121, in predict_future_sales
+    future_df['año'] = future_df['fecha'].dt.year
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\indexes\accessors.py", line 643, in __new__
+    raise AttributeError("Can only use .dt accessor with datetimelike values")
+AttributeError: Can only use .dt accessor with datetimelike values. Did you mean: 'at'?
+ERROR 2025-11-12 19:50:40,201 log 15484 13688 Internal Server Error: /api/sales/dashboard/predictions/
+Traceback (most recent call last):
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\views.py", line 412, in get_predictions
+    predictions = predict_future_sales(months_to_predict=6)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py", line 121, in predict_future_sales
+    future_df['año'] = future_df['fecha'].dt.year
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\implementacion\backend\venv\Lib\site-packages\pandas\core\indexes\accessors.py", line 643, in __new__
+    raise AttributeError("Can only use .dt accessor with datetimelike values")
+AttributeError: Can only use .dt accessor with datetimelike values. Did you mean: 'at'?
+INFO 2025-11-12 19:55:49,848 autoreload 15484 13800 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py changed, reloading.
+INFO 2025-11-12 19:55:53,576 autoreload 6492 8628 Watching for file changes with StatReloader
+INFO 2025-11-12 19:56:03,177 autoreload 12456 3488 Watching for file changes with StatReloader
