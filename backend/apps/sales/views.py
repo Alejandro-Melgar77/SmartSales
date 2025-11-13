@@ -27,6 +27,9 @@ from apps.payments.models import Payment
 
 from .ml_model import train_model, predict_future_sales
 
+from .ml_model import get_filtered_data, predict_dynamic # Importa las nuevas funciones
+from django.db.models import F
+
 class VentaViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint que permite a los usuarios ver sus Notas de Venta.
@@ -383,51 +386,48 @@ class DashboardViewSet(viewsets.ViewSet):
     """
     permission_classes = [permissions.IsAuthenticated]
 
-    @action(detail=False, methods=['get'], url_path='historical-summary')
-    def historical_summary(self, request):
+    @action(detail=False, methods=['post'], url_path='historical-data')
+    def historical_data(self, request):
         """
-        Devuelve las ventas históricas agrupadas por mes.
-        Perfecto para una gráfica de barras/líneas.
+        Devuelve datos históricos filtrados.
+        Body esperado: { categoria_id, producto_id, metric, start_date, end_date }
         """
-        ventas_por_mes = Venta.objects.filter(estado='COMPLETADO') \
-            .annotate(month=TruncMonth('fecha_creacion')) \
-            .values('month') \
-            .annotate(total=Sum('total')) \
-            .order_by('month')
+        filters = request.data
+        
+        # Usamos la misma lógica de obtención de datos que el modelo de ML
+        df = get_filtered_data(filters)
+        
+        if df is None:
+            return Response([])
             
-        # Formatear para Chart.js/Recharts
-        data = [
-            {
-                "fecha": item['month'].strftime("%Y-%m-%d"), 
-                "total": item['total']
-            } for item in ventas_por_mes
-        ]
+        # Filtrar por rango de fechas si se especifica
+        if filters.get('start_date'):
+            df = df[df['fecha'] >= filters['start_date']]
+        if filters.get('end_date'):
+            df = df[df['fecha'] <= filters['end_date']]
+
+        # Formatear para el frontend
+        data = []
+        for _, row in df.iterrows():
+            data.append({
+                "fecha": row['fecha'].strftime("%Y-%m-%d"),
+                "valor": row['valor']
+            })
+            
         return Response(data)
 
-    @action(detail=False, methods=['get'], url_path='predictions')
-    def get_predictions(self, request):
+    @action(detail=False, methods=['post'], url_path='generate-prediction')
+    def generate_prediction(self, request):
         """
-        Carga el modelo de IA y devuelve las predicciones futuras.
+        Genera una proyección basada en los filtros actuales.
+        Body: { categoria_id, producto_id, metric, months }
         """
-        predictions = predict_future_sales(months_to_predict=6)
+        filters = request.data
+        months = int(filters.get('months', 6))
+        
+        predictions = predict_dynamic(filters, months_to_predict=months)
         
         if isinstance(predictions, dict) and 'error' in predictions:
-            return Response(predictions, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(predictions, status=status.HTTP_400_BAD_REQUEST)
             
         return Response(predictions)
-
-    @action(detail=False, methods=['post'], url_path='retrain-model')
-    def retrain_model(self, request):
-        """
-        (Admin) Endpoint para forzar el re-entrenamiento del modelo de IA.
-        """
-        # (Idealmente, deberíamos añadir permissions.IsAdminUser aquí)
-        if not request.user.is_staff:
-             return Response({"error": "No autorizado"}, status=status.HTTP_403_FORBIDDEN)
-             
-        result = train_model()
-        
-        if isinstance(result, dict) and 'error' in result:
-             return Response(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-             
-        return Response(result)

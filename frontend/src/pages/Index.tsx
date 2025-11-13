@@ -26,6 +26,7 @@ const Index = () => {
         
         setBestSellers(featuredProducts);
         
+        
         // 👇 VERIFICACIÓN DE SEGURIDAD - asegurar que allProducts es array
         const safeAllProducts = Array.isArray(allProducts) ? allProducts : [];
         const safeFeaturedProducts = Array.isArray(featuredProducts) ? featuredProducts : [];
@@ -34,7 +35,9 @@ const Index = () => {
           product => !safeFeaturedProducts.some(featured => featured.id === product.id)
         );
         
-        const recommendedProducts = nonFeaturedProducts.slice(0, 8);
+        //const recommendedProducts = nonFeaturedProducts.slice(0, 8);
+        const recommendedProducts = allProducts.slice(0, 8);
+
         setRecommended(recommendedProducts);
         
       } catch (error) {

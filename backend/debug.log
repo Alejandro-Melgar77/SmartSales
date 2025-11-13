@@ -589,3 +589,12 @@ AttributeError: Can only use .dt accessor with datetimelike values. Did you mean
 INFO 2025-11-12 19:55:49,848 autoreload 15484 13800 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py changed, reloading.
 INFO 2025-11-12 19:55:53,576 autoreload 6492 8628 Watching for file changes with StatReloader
 INFO 2025-11-12 19:56:03,177 autoreload 12456 3488 Watching for file changes with StatReloader
+INFO 2025-11-12 20:23:10,409 autoreload 12456 3488 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py changed, reloading.
+INFO 2025-11-12 20:33:43,493 autoreload 8264 4404 Watching for file changes with StatReloader
+INFO 2025-11-12 20:34:17,730 autoreload 15512 13000 Watching for file changes with StatReloader
+INFO 2025-11-12 20:36:10,374 autoreload 15512 13000 C:\Users\Ale\Documents\Si2 2025-2\segundo parcial\intentos\lovable\backend\apps\sales\ml_model.py changed, reloading.
+INFO 2025-11-12 20:36:11,175 autoreload 4704 1860 Watching for file changes with StatReloader
+INFO 2025-11-12 20:36:31,485 autoreload 13708 12212 Watching for file changes with StatReloader
+WARNING 2025-11-12 20:47:38,759 log 13708 2176 Bad Request: /api/products/productos/7/
+WARNING 2025-11-12 20:50:26,773 log 13708 13904 Bad Request: /api/products/productos/
+WARNING 2025-11-12 21:11:41,814 log 13708 16308 Bad Request: /api/users/users/5/

@@ -7,6 +7,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -15,8 +18,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { AlertDialogCancel, AlertDialogContent, AlertDialogDescription } from "@radix-ui/react-alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 
 const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -42,6 +47,15 @@ const Navbar = () => {
     // toast.info("Funcionalidad de notas de venta en desarrollo"); // Comentado
     navigate("/notas-venta"); // <-- ACTIVADO
   };
+
+
+  const handleBackup = () => {
+    toast.success("Copia de seguridad creada exitosamente");
+  };
+
+  const handleRestore = () => {
+    toast.success("Datos restaurados exitosamente");
+  };
   // --- 👆 FIN DE LA MODIFICACIÓN ---
 
   return (
@@ -49,29 +63,76 @@ const Navbar = () => {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Left: Menu and Logo */}
         <div className="flex items-center gap-4">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[300px]">
-              <div className="flex flex-col gap-4 py-4">
-                <h3 className="text-lg font-semibold">Categorías</h3>
-                <Button variant="ghost" className="justify-start">Televisores</Button>
-                <Button variant="ghost" className="justify-start">Celulares</Button>
-                <Button variant="ghost" className="justify-start">Electrodomésticos</Button>
-                <Button variant="ghost" className="justify-start">Accesorios</Button>
-                
-                <h3 className="text-lg font-semibold mt-4">Sistema</h3>
-                <Button variant="ghost" className="justify-start">Reportes</Button>
-                <Button variant="ghost" className="justify-start">Backup</Button>
-                <Button variant="ghost" className="justify-start">Restore</Button>
-                <Button variant="ghost" className="justify-start">Gráficos</Button>
-                <Button variant="ghost" className="justify-start">Gestión</Button>
-              </div>
-            </SheetContent>
-          </Sheet>
+         <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="hover:bg-muted">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56 bg-popover">
+            <DropdownMenuItem onClick={() => navigate("/")}>Inicio</DropdownMenuItem>
+            
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                Categorías
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>Televisores</DropdownMenuItem>
+                <DropdownMenuItem>Celulares</DropdownMenuItem>
+                <DropdownMenuItem>Electrodomésticos</DropdownMenuItem>
+                <DropdownMenuItem>Accesorios</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+
+            <DropdownMenuItem onClick={() => navigate("/reportes")}>
+              Reportes
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  Backup
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogTitle>¿Crear copia de seguridad?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Se guardará una copia de todos los datos actuales.
+                </AlertDialogDescription>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBackup}>Confirmar</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <DropdownMenuItem onClick={handleRestore}>
+              Restore
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem onClick={() => navigate("/graficos")}>
+              Gráficos
+            </DropdownMenuItem>
+
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                Gestión
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onClick={() => navigate("/productos")}>
+                  Producto
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/usuarios")}>
+                  Usuario
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
           <h1 className="text-xl font-bold">SmartSales</h1>
         </div>

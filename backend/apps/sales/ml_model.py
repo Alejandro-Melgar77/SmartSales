@@ -10,20 +10,61 @@ from sklearn.metrics import mean_squared_error
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
 
-from .models import Venta
+from .models import Venta, DetalleVenta
 
 # --- Constantes ---
 MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(MODEL_DIR, 'sales_model.joblib')
 
+# --- Helper para obtener datos filtrados ---
+def get_filtered_data(filters):
+    """
+    Obtiene los datos históricos basados en los filtros del usuario.
+    """
+    # Empezamos con detalles de ventas completadas
+    queryset = DetalleVenta.objects.filter(venta__estado='COMPLETADO')
+
+    # 1. Filtros de Producto/Categoría
+    if filters.get('categoria_id') and filters['categoria_id'] != 'all':
+        queryset = queryset.filter(producto__categoria_id=filters['categoria_id'])
+    
+    if filters.get('producto_id') and filters['producto_id'] != 'all':
+        queryset = queryset.filter(producto_id=filters['producto_id'])
+
+    # 2. Agrupación por Mes
+    # metric: 'monto' (dinero) o 'cantidad' (unidades)
+    metric = filters.get('metric', 'monto')
+    
+    if metric == 'cantidad':
+        annot = Sum('cantidad')
+    else:
+        # Monto = precio * cantidad
+        # Nota: Esto asume que precio_unitario está guardado en DetalleVenta
+        from django.db.models import F
+        annot = Sum(F('precio_unitario') * F('cantidad'))
+
+    datos_agrupados = queryset.annotate(fecha=TruncMonth('venta__fecha_creacion')) \
+        .values('fecha') \
+        .annotate(valor=annot) \
+        .order_by('fecha')
+
+    if not datos_agrupados:
+        return None
+
+    df = pd.DataFrame(list(datos_agrupados))
+    # Pandas necesita convertir la fecha
+    if not df.empty:
+        df['fecha'] = pd.to_datetime(df['fecha'])
+    
+    return df
+
+# --- Función de Entrenamiento Global (Estático) ---
 def get_training_data():
     """
-    Prepara los datos históricos de la BD para el entrenamiento.
-    Agrupa las ventas por mes.
+    Prepara los datos históricos globales de la BD para el entrenamiento estático.
     """
-    print("🤖 [ML] Obteniendo datos de entrenamiento desde la BD...")
+    print("🤖 [ML] Obteniendo datos de entrenamiento globales...")
     
-    # 1. Agrupar ventas completadas por mes
     ventas_por_mes = Venta.objects.filter(estado='COMPLETADO') \
         .annotate(month=TruncMonth('fecha_creacion')) \
         .values('month') \
@@ -31,32 +72,25 @@ def get_training_data():
         .order_by('month')
 
     if not ventas_por_mes:
-        print("🤖 [ML] No hay datos históricos para entrenar.")
         return None
 
-    # 2. Convertir a DataFrame de Pandas
     df = pd.DataFrame(list(ventas_por_mes))
     df = df.rename(columns={'month': 'fecha', 'total_ventas': 'total'})
     
-    # --- --- --- --- --- --- --- --- ---
-    # --- 👇 CORRECCIÓN 1 (La de antes) ---
-    df['fecha'] = pd.to_datetime(df['fecha'])
-    # --- ----------------------------- ---
+    if not df.empty:
+        df['fecha'] = pd.to_datetime(df['fecha'])
     
-    # 3. Ingeniería de Características (Features)
+    # Feature Engineering
     df['año'] = df['fecha'].dt.year
     df['mes'] = df['fecha'].dt.month
-    df['mes_pasado'] = df['total'].shift(1).fillna(0) # Ventas del mes anterior
+    df['mes_pasado'] = df['total'].shift(1).fillna(0)
     df['trimestre'] = df['fecha'].dt.quarter
     
-    df_procesado = df[['año', 'mes', 'mes_pasado', 'trimestre', 'total']]
-    
-    print(f"🤖 [ML] Datos preparados. {len(df_procesado)} meses de historial.")
-    return df_procesado
+    return df[['año', 'mes', 'mes_pasado', 'trimestre', 'total']]
 
 def train_model():
     """
-    Entrena el modelo RandomForestRegressor y lo guarda (serializa).
+    Entrena el modelo RandomForestRegressor global y lo guarda.
     """
     df = get_training_data()
     
@@ -65,11 +99,10 @@ def train_model():
 
     X = df.drop('total', axis=1)
     y = df['total']
-    X_train, y_train = X, y
 
     print(f"🤖 [ML] Entrenando RandomForestRegressor...")
     model = RandomForestRegressor(n_estimators=100, random_state=42, max_depth=5)
-    model.fit(X_train, y_train)
+    model.fit(X, y)
     
     joblib.dump(model, MODEL_PATH)
     print(f"🤖 [ML] Modelo entrenado y guardado en {MODEL_PATH}")
@@ -78,77 +111,66 @@ def train_model():
 
 def predict_future_sales(months_to_predict=6):
     """
-    Carga el modelo serializado y predice los próximos X meses.
+    Carga el modelo serializado y predice los próximos X meses (Global).
     """
-    print("🤖 [ML] Iniciando predicción de ventas futuras...")
-    
     if not os.path.exists(MODEL_PATH):
-        print("🤖 [ML] Modelo no encontrado. Entrenando primero...")
-        train_result = train_model()
-        if isinstance(train_result, dict) and 'error' in train_result:
-            return train_result # Devuelve el error de entrenamiento si falla
+        train_model()
         
     try:
         model = joblib.load(MODEL_PATH)
-    except Exception as e:
-         return {"error": f"No se pudo cargar el modelo de IA: {str(e)}"}
+    except:
+         return {"error": "No se pudo cargar el modelo de IA."}
 
     last_sale = Venta.objects.filter(estado='COMPLETADO').order_by('-fecha_creacion').first()
     if not last_sale:
-        return {"error": "No hay ventas para usar como base de predicción."}
-        
-    last_month_data = get_training_data()
-    if last_month_data is None or last_month_data.empty:
-        return {"error": "No hay datos de entrenamiento para predecir."}
-        
-    last_total = last_month_data['total'].iloc[-1]
+        return {"error": "No hay ventas."}
     
-    # 3. Crear los "features" para los meses futuros
+    # Lógica simplificada para predicción global...
+    # (Para el dashboard dinámico usamos predict_dynamic, esta queda como fallback o para admin)
+    return [] 
+
+# --- Función de Predicción Dinámica (La que usa el Dashboard Nuevo) ---
+def predict_dynamic(filters, months_to_predict=6):
+    """
+    Entrena un modelo rápido basado SOLO en los datos filtrados
+    y proyecta X meses.
+    """
+    df = get_filtered_data(filters)
+    
+    if df is None or len(df) < 2:
+        return {"error": "Insuficientes datos históricos con estos filtros para proyectar (mínimo 2 meses)."}
+
+    # Ingeniería de características simple para proyección al vuelo
+    df['mes_idx'] = range(len(df)) # 0, 1, 2... (Tendencia temporal)
+    df['mes_del_anio'] = df['fecha'].dt.month
+    
+    X = df[['mes_idx', 'mes_del_anio']]
+    y = df['valor']
+
+    # Entrenar modelo ligero al vuelo
+    model = RandomForestRegressor(n_estimators=50, max_depth=5, random_state=42)
+    model.fit(X, y)
+
+    # Generar fechas futuras
+    last_date = df['fecha'].iloc[-1]
+    last_idx = df['mes_idx'].iloc[-1]
+    
     future_dates = []
-    current_date = last_sale.fecha_creacion.date().replace(day=1)
+    future_X = []
     
-    for _ in range(months_to_predict):
-        current_date = current_date + relativedelta(months=1)
-        future_dates.append(current_date)
-
-    future_df = pd.DataFrame({'fecha': future_dates})
+    for i in range(1, months_to_predict + 1):
+        next_date = last_date + relativedelta(months=i)
+        future_dates.append(next_date)
+        future_X.append([last_idx + i, next_date.month])
     
-    # --- --- --- --- --- --- --- --- ---
-    # --- 👇 CORRECCIÓN 2 (La nueva) ---
-    # Forzamos a Pandas a reconocer esta columna 'fecha' también
-    future_df['fecha'] = pd.to_datetime(future_df['fecha'])
-    # --- 👆 FIN DE LA CORRECCIÓN ---
-    # --- --- --- --- --- --- --- --- ---
+    # Predecir
+    predictions = model.predict(future_X)
     
-    future_df['año'] = future_df['fecha'].dt.year
-    future_df['mes'] = future_df['fecha'].dt.month
-    future_df['trimestre'] = future_df['fecha'].dt.quarter
-    
-    future_df['mes_pasado'] = 0
-    future_df.loc[0, 'mes_pasado'] = last_total
-    
-    features_para_predecir = future_df[['año', 'mes', 'mes_pasado', 'trimestre']]
-    
-    # Predecir iterativamente
-    predictions = []
-    current_features = features_para_predecir.copy()
-
-    for i in range(months_to_predict):
-        # Predecir el mes actual
-        pred = model.predict(current_features.iloc[i:i+1])
-        predictions.append(pred[0])
-        
-        # Actualizar el 'mes_pasado' del *siguiente* mes (si existe)
-        if i + 1 < len(current_features):
-            current_features.loc[i + 1, 'mes_pasado'] = pred[0]
-    
-    # 5. Formatear salida
     results = []
     for i, date in enumerate(future_dates):
         results.append({
             "fecha": date.strftime("%Y-%m-%d"),
-            "prediccion": predictions[i]
+            "prediccion": max(0, predictions[i]) # No permitir negativos
         })
-
-    print(f"🤖 [ML] Predicción completada. {results}")
+        
     return results
