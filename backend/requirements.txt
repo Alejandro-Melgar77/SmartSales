@@ -1,62 +1,38 @@
-# --- Framework Principal ---
-#django
-#djangorestframework
-
-# --- Base de Datos ---
-#psycopg2-binary
-
-# --- API y Documentación ---
-#drf-spectacular
-#django-cors-headers
-
-# --- Machine Learning (IA) ---
-#scikit-learn
-#joblib
-#pandas
-#numpy
-
-# --- Reportes (PDF y Excel) ---
-#openpyxl
-#reportlab
-
-#---------------------------------------------------
-#----VERSION COMPLETA (CAMBIAR SI DE FALLAS)-------
-
-# === DJANGO CORE ===
-# === FRAMEWORK PRINCIPAL ===
-Django==5.1.2  # Ajustado a una versión estable reciente
-djangorestframework==3.15.2
-django-cors-headers==4.6.0
-django-filter==24.3
-drf-spectacular==0.27.2
-
-# === BASE DE DATOS ===
-psycopg2-binary==2.9.10
-# SQLite viene por defecto en Python
-
-# === MACHINE LEARNING & DATA SCIENCE ===
-scikit-learn==1.5.2
-pandas==2.2.2
-numpy==1.26.4
-joblib==1.4.2
-python-dateutil==2.9.0  # <-- ¡NUEVO! Necesario para relativedelta en ml_model.py
-
-# === REPORTES & ARCHIVOS ===
-reportlab==4.2.2
+asgiref==3.10.0
+attrs==25.4.0
+certifi==2025.10.5
+charset-normalizer==3.4.4
+Django==5.2.7
+django-cors-headers==4.9.0
+django-filter==25.2
+djangorestframework==3.16.1
+drf-spectacular==0.29.0
+et_xmlfile==2.0.0
+gunicorn==23.0.0
+idna==3.11
+inflection==0.5.1
+joblib==1.5.2
+jsonschema==4.25.1
+jsonschema-specifications==2025.9.1
+numpy==2.3.4
 openpyxl==3.1.5
-Pillow==10.4.0          # Manejo de imágenes (ImageField)
-weasyprint==62.3        # Opcional (si decides usarlo para PDF desde HTML)
-
-# === UTILIDADES & CONFIGURACIÓN ===
-python-decouple==3.8    # Para leer .env
-whitenoise==6.7.0       # Para servir archivos estáticos en producción
-requests==2.32.3        # Para peticiones HTTP externas
-
-# === DESARROLLO & TESTING ===
-django-debug-toolbar==4.4.6
-django-extensions==3.2.3
-Faker==26.0.0           # Para generar datos falsos si es necesario
-
-# === SEGURIDAD ===
-bcrypt==4.2.0
-argon2-cffi==23.1.0
+packaging==25.0
+pandas==2.3.3
+pillow==12.0.0
+psycopg2-binary==2.9.11
+python-dateutil==2.9.0.post0
+python-decouple==3.8
+pytz==2025.2
+PyYAML==6.0.3
+referencing==0.37.0
+reportlab==4.4.4
+requests==2.32.5
+rpds-py==0.28.0
+scikit-learn==1.7.2
+scipy==1.16.3
+six==1.17.0
+sqlparse==0.5.3
+threadpoolctl==3.6.0
+tzdata==2025.2
+uritemplate==4.2.0
+urllib3==2.5.0

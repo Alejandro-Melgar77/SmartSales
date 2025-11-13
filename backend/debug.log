@@ -599,3 +599,8 @@ WARNING 2025-11-12 20:47:38,759 log 13708 2176 Bad Request: /api/products/produc
 WARNING 2025-11-12 20:50:26,773 log 13708 13904 Bad Request: /api/products/productos/
 WARNING 2025-11-12 21:11:41,814 log 13708 16308 Bad Request: /api/users/users/5/
 INFO 2025-11-12 23:05:30,309 autoreload 3908 1624 Watching for file changes with StatReloader
+WARNING 2025-11-12 23:07:21,761 log 3908 13036 Bad Request: /api/products/productos/
+INFO 2025-11-12 23:57:49,963 autoreload 13908 13556 Watching for file changes with StatReloader
+INFO 2025-11-13 00:00:44,121 autoreload 12868 1920 Watching for file changes with StatReloader
+WARNING 2025-11-13 00:01:06,326 log 12868 16128 Unauthorized: /api/sales/ventas/
+WARNING 2025-11-13 00:01:15,273 log 12868 16128 Unauthorized: /api/sales/ventas/

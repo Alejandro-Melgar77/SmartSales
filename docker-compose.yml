@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # --- Base de Datos ---
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=smartsales
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: always
+
+  # --- Backend (Django) ---
+  backend:
+    build: ./backend
+    command: gunicorn smartsales_config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - media_volume:/app/media  # Persistencia de imágenes subidas
+      - static_volume:/app/staticfiles
+    expose:
+      - 8000
+    depends_on:
+      - db
+    environment:
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=smartsales
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DEBUG=False # En producción, Debug debe ser falso
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend # Añade tu dominio aquí si tienes uno
+
+  # --- Frontend (Nginx + React) ---
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80" # El puerto estándar web
+    volumes:
+      - media_volume:/app/media # Para que Nginx pueda leer las fotos que sube Django
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  media_volume:
+  static_volume:

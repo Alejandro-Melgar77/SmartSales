@@ -95,15 +95,17 @@ WSGI_APPLICATION = 'smartsales_config.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Usar SQLite temporalmente para evitar problemas con PostgreSQL
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+"""
 
 # Configuración para PostgreSQL (cuando esté listo)
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
@@ -114,7 +116,7 @@ DATABASES = {
         'PORT': config('DB_PORT', default='5432'),
     }
 }
-"""
+
 
 
 # Password validation - Mantener vacío pero sin comentar
