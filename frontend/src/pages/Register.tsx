@@ -65,7 +65,7 @@ const Register = () => {
         const userData = await response.json();
         
         // Auto-login después del registro
-        login(userData);
+        login(userData, userData.token);
         toast.success(`¡Bienvenido ${userData.first_name}! Cuenta creada exitosamente.`);
         navigate("/");
       } else {

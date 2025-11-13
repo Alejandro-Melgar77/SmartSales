@@ -23,38 +23,40 @@
 #----VERSION COMPLETA (CAMBIAR SI DE FALLAS)-------
 
 # === DJANGO CORE ===
-Django==5.2.7
+# === FRAMEWORK PRINCIPAL ===
+Django==5.1.2  # Ajustado a una versión estable reciente
 djangorestframework==3.15.2
-django-cors-headers==4.7.0
+django-cors-headers==4.6.0
 django-filter==24.3
 drf-spectacular==0.27.2
 
-# === DATABASE ===
+# === BASE DE DATOS ===
 psycopg2-binary==2.9.10
-# Para desarrollo con SQLite (no necesita instalación adicional)
+# SQLite viene por defecto en Python
 
 # === MACHINE LEARNING & DATA SCIENCE ===
 scikit-learn==1.5.2
 pandas==2.2.2
 numpy==1.26.4
 joblib==1.4.2
+python-dateutil==2.9.0  # <-- ¡NUEVO! Necesario para relativedelta en ml_model.py
 
-# === REPORTES (PDF & EXCEL) ===
+# === REPORTES & ARCHIVOS ===
 reportlab==4.2.2
 openpyxl==3.1.5
-weasyprint==61.0
+Pillow==10.4.0          # Manejo de imágenes (ImageField)
+weasyprint==62.3        # Opcional (si decides usarlo para PDF desde HTML)
 
-# === UTILITIES ===
-Pillow==10.4.0  # Para manejo de imágenes
-python-decouple==3.8  # Para variables de entorno
-whitenoise==6.9.0  # Para servir archivos estáticos
-requests==2.32.3
+# === UTILIDADES & CONFIGURACIÓN ===
+python-decouple==3.8    # Para leer .env
+whitenoise==6.7.0       # Para servir archivos estáticos en producción
+requests==2.32.3        # Para peticiones HTTP externas
 
-# === DEVELOPMENT & TESTING ===
-django-debug-toolbar==4.4.7
+# === DESARROLLO & TESTING ===
+django-debug-toolbar==4.4.6
 django-extensions==3.2.3
-Faker==28.4.0  # Para datos de prueba
+Faker==26.0.0           # Para generar datos falsos si es necesario
 
-# === SECURITY ===
-bcrypt==4.2.1
+# === SEGURIDAD ===
+bcrypt==4.2.0
 argon2-cffi==23.1.0

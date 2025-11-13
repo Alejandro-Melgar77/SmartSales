@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom"; // <-- Importar para la búsqueda
+import { Plus, Edit, Trash2, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -9,7 +10,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import { Product, Category, getAllProducts, getCategories } from "@/integrations/supabase/products";
+
+interface Product {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio_venta: number;
+  categoria: number;
+  categoria_nombre?: string;
+  imagen: string | null;
+  destacado: boolean;
+  activo: boolean;
+}
+
+interface Category {
+  id: number;
+  nombre: string;
+  caracteristicas: string;
+}
 
 const Productos = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,21 +35,36 @@ const Productos = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-  // Cargar productos y categorías
+  // 👇 Hook para leer la URL
+  const [searchParams] = useSearchParams();
+  const currentSearch = searchParams.get("search");
+
+  // Cargar productos y categorías (al inicio y cuando cambia la búsqueda)
   useEffect(() => {
     loadData();
-  }, []);
+  }, [currentSearch]); // <-- Se ejecuta al buscar
 
   const loadData = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const [productsData, categoriesData] = await Promise.all([
-        getAllProducts(),
-        getCategories(),
+      // 👇 Construir URL dinámica
+      let productsUrl = 'http://localhost:8000/api/products/productos/';
+      if (currentSearch) {
+        productsUrl += `?search=${encodeURIComponent(currentSearch)}`;
+      }
+
+      const [prodRes, catRes] = await Promise.all([
+        fetch(productsUrl),
+        fetch('http://localhost:8000/api/products/categorias/')
       ]);
-      setProducts(productsData);
-      setCategories(categoriesData);
+      
+      const prodData = await prodRes.json();
+      const catData = await catRes.json();
+
+      setProducts(Array.isArray(prodData) ? prodData : prodData.results || []);
+      setCategories(Array.isArray(catData) ? catData : catData.results || []);
     } catch (error) {
       toast.error("Error al cargar datos");
       console.error('Error fetching data:', error);
@@ -42,68 +75,55 @@ const Productos = () => {
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    
-    const productData = {
-      nombre: formData.get("nombre") as string,
-      descripcion: formData.get("descripcion") as string,
-      precio_venta: Number(formData.get("precio_venta")),
-      categoria: Number(formData.get("categoria")), // 👈 CORREGIDO: debe ser number, no string
-      imagen: formData.get("imagen") as string || "/placeholder.svg",
-      destacado: formData.get("destacado") === "true",
-      activo: true
-    };
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
 
-    console.log('📦 Enviando datos:', productData); // 👈 Para debug
+    if (selectedImage) {
+      formData.append('imagen', selectedImage);
+    } else {
+      formData.delete('imagen');
+    }
+
+    if (!formData.has('destacado')) {
+        formData.append('destacado', editingProduct?.destacado ? 'true' : 'false');
+    }
+    formData.append('activo', 'true');
 
     try {
-      if (editingProduct) {
-        // Actualizar producto existente
-        const response = await fetch(`http://localhost:8000/api/products/productos/${editingProduct.id}/`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(productData)
-        });
-
-        if (response.ok) {
-          toast.success("Producto actualizado");
-          loadData(); // Recargar la lista
-        } else {
-          const errorData = await response.json();
-          console.error('Error del servidor:', errorData);
-          throw new Error('Error al actualizar');
-        }
-      } else {
-        // Crear nuevo producto
-        const response = await fetch('http://localhost:8000/api/products/productos/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(productData)
-        });
-
-        if (response.ok) {
-          toast.success("Producto creado");
-          loadData(); // Recargar la lista
-        } else {
-          const errorData = await response.json();
-          console.error('Error del servidor:', errorData);
-          throw new Error('Error al crear');
-        }
-      }
+      const url = editingProduct
+        ? `http://localhost:8000/api/products/productos/${editingProduct.id}/`
+        : 'http://localhost:8000/api/products/productos/';
       
-      setDialogOpen(false);
-      setEditingProduct(null);
+      const method = editingProduct ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method: method,
+        body: formData 
+      });
+
+      if (response.ok) {
+        toast.success(editingProduct ? "Producto actualizado" : "Producto creado");
+        loadData();
+        setDialogOpen(false);
+        setEditingProduct(null);
+        setSelectedImage(null);
+      } else {
+        const errorData = await response.json();
+        console.error('🔥 Error del backend:', errorData);
+        
+        let msg = "Error al guardar.";
+        if (errorData.imagen) msg += ` Imagen: ${errorData.imagen}`;
+        if (errorData.detail) msg += ` ${errorData.detail}`;
+        
+        toast.error(msg);
+      }
     } catch (error) {
-      toast.error("Error al guardar el producto");
+      toast.error("Error de conexión con el servidor");
       console.error('Error saving product:', error);
     }
   };
 
-  const handleDelete = async (id: number) => { // 👈 CORREGIDO: id debe ser number
+  const handleDelete = async (id: number) => {
     try {
       const response = await fetch(`http://localhost:8000/api/products/productos/${id}/`, {
         method: 'DELETE'
@@ -111,13 +131,20 @@ const Productos = () => {
 
       if (response.ok) {
         toast.success("Producto eliminado");
-        loadData(); // Recargar la lista
+        loadData();
       } else {
         throw new Error('Error al eliminar');
       }
     } catch (error) {
       toast.error("Error al eliminar el producto");
-      console.error('Error deleting product:', error);
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      setEditingProduct(null);
+      setSelectedImage(null);
     }
   };
 
@@ -125,10 +152,8 @@ const Productos = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <main className="container mx-auto px-4 py-8">
-          <div className="flex justify-center items-center h-64">
-            <p>Cargando productos...</p>
-          </div>
+        <main className="container mx-auto px-4 py-8 flex justify-center">
+          <p>Cargando productos...</p>
         </main>
       </div>
     );
@@ -139,15 +164,24 @@ const Productos = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-foreground">Gestión de Productos</h1>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          {/* 👇 Título dinámico según búsqueda */}
+          <div className="flex flex-col gap-1">
+            <h1 className="text-3xl font-bold text-foreground">
+              {currentSearch ? `Resultados para: "${currentSearch}"` : "Gestión de Productos"}
+            </h1>
+            {currentSearch && (
+               <p className="text-sm text-muted-foreground">Mostrando {products.length} resultados</p>
+            )}
+          </div>
+
+          <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
               <Button onClick={() => setEditingProduct(null)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Agregar Producto
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{editingProduct ? "Editar" : "Nuevo"} Producto</DialogTitle>
               </DialogHeader>
@@ -191,7 +225,7 @@ const Productos = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id.toString()}> {/* 👈 CORREGIDO: convertir a string */}
+                        <SelectItem key={category.id} value={category.id.toString()}>
                           {category.nombre}
                         </SelectItem>
                       ))}
@@ -200,18 +234,34 @@ const Productos = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="imagen">URL de Imagen</Label>
-                  <Input 
-                    id="imagen" 
-                    name="imagen" 
-                    defaultValue={editingProduct?.imagen} 
-                    placeholder="/media/productos/imagen.jpg"
-                  />
+                  <Label htmlFor="imagen">Imagen del Producto</Label>
+                  <div className="space-y-2">
+                    <Input 
+                      id="imagen" 
+                      type="file" 
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setSelectedImage(e.target.files[0]);
+                        }
+                      }}
+                    />
+                    {(editingProduct?.imagen && !selectedImage) && (
+                      <p className="text-xs text-muted-foreground">
+                        Imagen actual: <a href={editingProduct.imagen} target="_blank" rel="noreferrer" className="underline">Ver imagen</a>
+                      </p>
+                    )}
+                    {selectedImage && (
+                      <p className="text-xs text-green-600">
+                        Nueva imagen seleccionada: {selectedImage.name}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 
                 <div>
                   <Label htmlFor="destacado">Destacado</Label>
-                  <Select name="destacado" defaultValue={editingProduct?.destacado?.toString() || "false"}>
+                  <Select name="destacado" defaultValue={editingProduct?.destacado ? "true" : "false"}>
                     <SelectTrigger>
                       <SelectValue placeholder="¿Producto destacado?" />
                     </SelectTrigger>
@@ -222,49 +272,59 @@ const Productos = () => {
                   </Select>
                 </div>
                 
-                <div className="flex gap-2 pt-4">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="flex-1"
-                    onClick={() => {
-                      setDialogOpen(false);
-                      setEditingProduct(null);
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button type="submit" className="flex-1">
-                    {editingProduct ? "Actualizar" : "Crear"} Producto
-                  </Button>
-                </div>
+                <Button type="submit" className="w-full">
+                  {editingProduct ? "Actualizar" : "Crear"} Producto
+                </Button>
               </form>
             </DialogContent>
           </Dialog>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <Card key={product.id} className="overflow-hidden">
-              <CardContent className="p-0">
-                <div className="aspect-square overflow-hidden">
-                  <img 
-                    src={product.imagen || "/placeholder.svg"} 
-                    alt={product.nombre} 
-                    className="h-full w-full object-cover transition-transform hover:scale-105" 
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-2">{product.nombre}</h3>
-                  <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                    {product.descripcion || "Sin descripción"}
-                  </p>
-                  <p className="text-lg font-bold text-primary mb-2">${product.precio_venta}</p>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Categoría: {product.categoria_nombre}
+        {/* 👇 Mensaje de "No resultados" mejorado */}
+        {products.length === 0 ? (
+          <div className="text-center py-12 border-2 border-dashed rounded-lg">
+            <div className="flex justify-center mb-4">
+                <SearchX className="h-12 w-12 text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground text-lg">
+                {currentSearch ? `No encontramos productos que coincidan con "${currentSearch}".` : "No hay productos registrados."}
+            </p>
+            {currentSearch && (
+                <Button variant="link" onClick={() => window.location.href='/productos'}>
+                    Ver todos los productos
+                </Button>
+            )}
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {products.map((product) => (
+              <Card key={product.id}>
+                <CardContent className="p-4">
+                  <div className="aspect-square w-full mb-4 overflow-hidden rounded-lg bg-gray-100">
+                    {product.imagen ? (
+                      <img 
+                        src={product.imagen} 
+                        alt={product.nombre} 
+                        className="h-full w-full object-cover" 
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "/placeholder.svg";
+                        }}
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-gray-400">
+                        Sin imagen
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="font-semibold">{product.nombre}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{product.descripcion}</p>
+                  <p className="text-lg font-bold text-primary mt-2">Bs {product.precio_venta}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Categoría: {product.categoria_nombre || "Sin categoría"}
                     {product.destacado && " • ⭐ Destacado"}
                   </p>
-                  <div className="flex gap-2">
+                  
+                  <div className="mt-4 flex gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -297,18 +357,9 @@ const Productos = () => {
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {products.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No hay productos registrados.</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Haz clic en "Agregar Producto" para comenzar.
-            </p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
       </main>
